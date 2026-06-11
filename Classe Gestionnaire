@@ -1,0 +1,155 @@
+package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Gère les comptes abonnés et administrateurs du système.
+ */
+public class GestionnaireUtilisateurs implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private List<Abonne> abonnes;
+    private List<Administrateur> administrateurs;
+
+    public GestionnaireUtilisateurs() {
+        this.abonnes = new ArrayList<>();
+        this.administrateurs = new ArrayList<>();
+
+        ajouterAdminSiAbsent("Admin", "System", "admin", "admin123");
+    }
+
+    public void ajouterAdminSiAbsent(String prenom, String nom, String login, String motDePasse) {
+        if (login == null || login.isBlank()) {
+            return;
+        }
+
+        if (trouverAdmin(login) == null) {
+            administrateurs.add(new Administrateur(prenom, nom, login.trim(), motDePasse));
+        }
+    }
+
+    public Administrateur trouverAdmin(String login) {
+        if (login == null) {
+            return null;
+        }
+
+        for (Administrateur admin : administrateurs) {
+            if (admin.getLogin().equals(login.trim())) {
+                return admin;
+            }
+        }
+        return null;
+    }
+
+    public Abonne creerCompte(String prenom, String nom, String login, String motDePasse) {
+        if (login == null || login.isBlank()) {
+            return null;
+        }
+
+        login = login.trim();
+
+        if (trouverAbonne(login) != null || trouverAdmin(login) != null) {
+            return null;
+        }
+
+        Abonne abonne = new Abonne(prenom, nom, login, motDePasse);
+        abonnes.add(abonne);
+        return abonne;
+    }
+
+    public Abonne authentifierAbonne(String login, String motDePasse) {
+        if (login == null || motDePasse == null) {
+            return null;
+        }
+
+        Abonne abonne = trouverAbonne(login.trim());
+
+        if (abonne == null) {
+            return null;
+        }
+
+        if (abonne.isSuspendu()) {
+            return null;
+        }
+
+        if (!abonne.verifierMotDePasse(motDePasse)) {
+            return null;
+        }
+
+        return abonne;
+    }
+
+    public Administrateur authentifierAdmin(String login, String motDePasse) {
+        if (login == null || motDePasse == null) {
+            return null;
+        }
+
+        Administrateur admin = trouverAdmin(login.trim());
+
+        if (admin == null) {
+            return null;
+        }
+
+        if (!admin.verifierMotDePasse(motDePasse)) {
+            return null;
+        }
+
+        return admin;
+    }
+
+    public Abonne trouverAbonne(String login) {
+        if (login == null) {
+            return null;
+        }
+
+        for (Abonne abonne : abonnes) {
+            if (abonne.getLogin().equals(login.trim())) {
+                return abonne;
+            }
+        }
+        return null;
+    }
+
+    public boolean suspendreAbonne(String login) {
+        Abonne abonne = trouverAbonne(login);
+        if (abonne == null) {
+            return false;
+        }
+
+        abonne.setSuspendu(true);
+        return true;
+    }
+
+    public boolean reactiverAbonne(String login) {
+        Abonne abonne = trouverAbonne(login);
+        if (abonne == null) {
+            return false;
+        }
+
+        abonne.setSuspendu(false);
+        return true;
+    }
+
+    public boolean supprimerAbonne(String login) {
+        if (login == null) {
+            return false;
+        }
+
+        return abonnes.removeIf(abonne -> abonne.getLogin().equals(login.trim()));
+    }
+
+    public List<Abonne> getAbonnes() {
+        return abonnes;
+    }
+
+    public int getNbAbonnes() {
+        return abonnes.size();
+    }
+
+    public int getNbUtilisateurs() {
+        return abonnes.size() + administrateurs.size();
+    }
+}
