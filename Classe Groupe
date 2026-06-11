@@ -1,0 +1,90 @@
+package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Représente un groupe musical.
+ */
+public class Groupe implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    private static int compteur = 0;
+
+    private int id;
+    private String nom;
+    private String biographie;
+    private int anneeFormation;
+    private List<Artiste> membres;
+    private List<Album> albums;
+    private List<Morceau> morceaux;
+
+    public Groupe(String nom, String biographie, int anneeFormation) {
+        this.id = ++compteur;
+        this.nom = nom;
+        this.biographie = biographie;
+        this.anneeFormation = anneeFormation;
+        this.membres = new ArrayList<>();
+        this.albums = new ArrayList<>();
+        this.morceaux = new ArrayList<>();
+    }
+
+    public void ajouterMembre(Artiste artiste) {
+        if (artiste != null && !membres.contains(artiste)) {
+            membres.add(artiste);
+            artiste.setGroupe(this);
+        }
+    }
+
+    public void ajouterAlbum(Album album) {
+        if (album != null && !albums.contains(album)) {
+            albums.add(album);
+        }
+    }
+
+    public void ajouterMorceau(Morceau morceau) {
+        if (morceau != null && !morceaux.contains(morceau)) {
+            morceaux.add(morceau);
+        }
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public static void setCompteur(int valeur) {
+        compteur = valeur;
+    }
+    public String getNom() {
+        return nom;
+    }
+
+    public String getBiographie() {
+        return biographie;
+    }
+
+    public int getAnneeFormation() {
+        return anneeFormation;
+    }
+
+    public List<Artiste> getMembres() {
+        return membres;
+    }
+
+    public List<Album> getAlbums() {
+        return albums;
+    }
+
+    public List<Morceau> getMorceaux() {
+        return morceaux;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%d] %s (formé en %d, %d membre(s))",
+                id, nom, anneeFormation, membres.size());
+    }
+}
