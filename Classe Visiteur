@@ -1,0 +1,32 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+package model;
+
+public class Visiteur extends Utilisateur {
+    private static final long serialVersionUID = 1L;
+    public static final int MAX_ECOUTES = 5;
+    private int nbEcoutesSession = 0;
+
+    public Visiteur() {
+        super("Visiteur", "Anonyme");
+    }
+
+    public boolean peutEcouter() {
+        return this.nbEcoutesSession < 5;
+    }
+
+    public void incrementerEcoutes() {
+        ++this.nbEcoutesSession;
+    }
+
+    public int getNbEcoutesSession() {
+        return this.nbEcoutesSession;
+    }
+
+    public String toString() {
+        return "Visiteur anonyme";
+    }
+}
