@@ -1,0 +1,31 @@
+package model;
+
+/**
+ * Représente un administrateur du système JAVAZIC.
+ */
+public class Administrateur extends Utilisateur {
+
+    private static final long serialVersionUID = 1L;
+
+    private String login;
+    private String motDePasse;
+
+    public Administrateur(String prenom, String nom, String login, String motDePasse) {
+        super(nom, prenom);
+        this.login = login;
+        this.motDePasse = motDePasse;
+    }
+
+    public boolean verifierMotDePasse(String mdp) {
+        return motDePasse != null && motDePasse.equals(mdp);
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Administrateur: %s %s (login: %s)", prenom, nom, login);
+    }
+}
