@@ -1,0 +1,100 @@
+package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Représente un album musical.
+ */
+public class Album implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    private static int compteur = 0;
+
+    private int id;
+    private String titre;
+    private int annee;
+    private String type;
+    private Artiste artiste;
+    private Groupe groupe;
+    private List<Morceau> morceaux;
+
+    public Album(String titre, int annee, String type) {
+        this.id = ++compteur;
+        this.titre = titre;
+        this.annee = annee;
+        this.type = type;
+        this.morceaux = new ArrayList<>();
+    }
+
+    public void ajouterMorceau(Morceau morceau) {
+        if (morceau != null && !morceaux.contains(morceau)) {
+            morceaux.add(morceau);
+        }
+    }
+
+    public String getInterprete() {
+        if (artiste != null) {
+            return artiste.getNomComplet();
+        }
+        if (groupe != null) {
+            return groupe.getNom();
+        }
+        return "Inconnu";
+    }
+
+    public int getNbMorceaux() {
+        return morceaux.size();
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public static void setCompteur(int valeur) {
+        compteur = valeur;
+    }
+    public String getTitre() {
+        return titre;
+    }
+
+    public int getAnnee() {
+        return annee;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public List<Morceau> getMorceaux() {
+        return morceaux;
+    }
+
+    public Artiste getArtiste() {
+        return artiste;
+    }
+
+    public void setArtiste(Artiste artiste) {
+        this.artiste = artiste;
+        this.groupe = null;
+    }
+
+    public Groupe getGroupe() {
+        return groupe;
+    }
+
+    public void setGroupe(Groupe groupe) {
+        this.groupe = groupe;
+        this.artiste = null;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%d] \"%s\" - %s (%d) [%s] - %d morceau(x)",
+                id, titre, getInterprete(), annee, type, morceaux.size());
+    }
+}
