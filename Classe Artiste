@@ -1,0 +1,91 @@
+package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Représente un artiste solo.
+ */
+public class Artiste implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    private static int compteur = 0;
+
+    private int id;
+    private String prenom;
+    private String nom;
+    private String biographie;
+    private Groupe groupe;
+    private List<Album> albums;
+    private List<Morceau> morceaux;
+
+    public Artiste(String prenom, String nom, String biographie) {
+        this.id = ++compteur;
+        this.prenom = prenom;
+        this.nom = nom;
+        this.biographie = biographie;
+        this.albums = new ArrayList<>();
+        this.morceaux = new ArrayList<>();
+    }
+
+    public void ajouterAlbum(Album album) {
+        if (album != null && !albums.contains(album)) {
+            albums.add(album);
+        }
+    }
+
+    public void ajouterMorceau(Morceau morceau) {
+        if (morceau != null && !morceaux.contains(morceau)) {
+            morceaux.add(morceau);
+        }
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public static void setCompteur(int valeur) {
+        compteur = valeur;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public String getNomComplet() {
+        return prenom + " " + nom;
+    }
+
+    public String getBiographie() {
+        return biographie;
+    }
+
+    public Groupe getGroupe() {
+        return groupe;
+    }
+
+    public void setGroupe(Groupe groupe) {
+        this.groupe = groupe;
+    }
+
+    public List<Album> getAlbums() {
+        return albums;
+    }
+
+    public List<Morceau> getMorceaux() {
+        return morceaux;
+    }
+
+    @Override
+    public String toString() {
+        String groupeTexte = (groupe != null) ? " (membre de " + groupe.getNom() + ")" : "";
+        return String.format("[%d] %s%s", id, getNomComplet(), groupeTexte);
+    }
+}
