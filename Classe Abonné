@@ -1,0 +1,84 @@
+package model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Représente un abonné du système JAVAZIC.
+ * Peut écouter en illimité, gérer des playlists et consulter son historique.
+ */
+public class Abonne extends Utilisateur {
+
+    private static final long serialVersionUID = 1L;
+
+    private String login;
+    private String motDePasse;
+    private boolean suspendu;
+    private List<Playlist> playlists;
+    private List<Morceau> historique;
+
+    public Abonne(String prenom, String nom, String login, String motDePasse) {
+        super(nom, prenom);
+        this.login = login;
+        this.motDePasse = motDePasse;
+        this.suspendu = false;
+        this.playlists = new ArrayList<>();
+        this.historique = new ArrayList<>();
+    }
+
+    public boolean verifierMotDePasse(String mdp) {
+        return motDePasse != null && motDePasse.equals(mdp);
+    }
+
+    public Playlist creerPlaylist(String nom) {
+        Playlist playlist = new Playlist(nom);
+        playlists.add(playlist);
+        return playlist;
+    }
+
+    public boolean supprimerPlaylist(int idPlaylist) {
+        return playlists.removeIf(p -> p.getId() == idPlaylist);
+    }
+
+    public Playlist getPlaylistById(int id) {
+        for (Playlist p : playlists) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public void ajouterHistorique(Morceau morceau) {
+        if (morceau != null) {
+            historique.add(morceau);
+            morceau.incrementerEcoutes();
+        }
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public boolean isSuspendu() {
+        return suspendu;
+    }
+
+    public void setSuspendu(boolean suspendu) {
+        this.suspendu = suspendu;
+    }
+
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public List<Morceau> getHistorique() {
+        return historique;
+    }
+
+    @Override
+    public String toString() {
+        String statut = suspendu ? " [SUSPENDU]" : "";
+        return String.format("Abonné: %s %s (login: %s)%s", prenom, nom, login, statut);
+    }
+}
