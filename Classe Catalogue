@@ -1,0 +1,279 @@
+package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Catalogue musical central du système.
+ */
+public class Catalogue implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private List<Morceau> morceaux;
+    private List<Album> albums;
+    private List<Artiste> artistes;
+    private List<Groupe> groupes;
+
+    public Catalogue() {
+        this.morceaux = new ArrayList<>();
+        this.albums = new ArrayList<>();
+        this.artistes = new ArrayList<>();
+        this.groupes = new ArrayList<>();
+    }
+
+    public void ajouterMorceau(Morceau morceau) {
+        if (morceau != null && !morceaux.contains(morceau)) {
+            morceaux.add(morceau);
+        }
+    }
+
+    public void ajouterAlbum(Album album) {
+        if (album != null && !albums.contains(album)) {
+            albums.add(album);
+        }
+    }
+
+    public void ajouterArtiste(Artiste artiste) {
+        if (artiste != null && !artistes.contains(artiste)) {
+            artistes.add(artiste);
+        }
+    }
+
+    public void ajouterGroupe(Groupe groupe) {
+        if (groupe != null && !groupes.contains(groupe)) {
+            groupes.add(groupe);
+        }
+    }
+
+    public boolean supprimerMorceau(int id) {
+        return morceaux.removeIf(m -> m.getId() == id);
+    }
+
+    public boolean supprimerAlbum(int id) {
+        return albums.removeIf(a -> a.getId() == id);
+    }
+
+    public boolean supprimerArtiste(int id) {
+        return artistes.removeIf(a -> a.getId() == id);
+    }
+
+    public boolean supprimerGroupe(int id) {
+        return groupes.removeIf(g -> g.getId() == id);
+    }
+
+    public Morceau getMorceauById(int id) {
+        for (Morceau m : morceaux) {
+            if (m.getId() == id) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public Album getAlbumById(int id) {
+        for (Album a : albums) {
+            if (a.getId() == id) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    public Artiste getArtisteById(int id) {
+        for (Artiste a : artistes) {
+            if (a.getId() == id) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    public Groupe getGroupeById(int id) {
+        for (Groupe g : groupes) {
+            if (g.getId() == id) {
+                return g;
+            }
+        }
+        return null;
+    }
+
+    public List<Morceau> rechercherMorceaux(String motCle) {
+        List<Morceau> resultats = new ArrayList<>();
+
+        if (motCle == null || motCle.isBlank()) {
+            return resultats;
+        }
+
+        String mc = motCle.toLowerCase().trim();
+
+        for (Morceau morceau : morceaux) {
+            boolean correspond = false;
+
+            // Recherche par titre
+            if (morceau.getTitre() != null && morceau.getTitre().toLowerCase().contains(mc)) {
+                correspond = true;
+            }
+
+            // Recherche par artiste
+            if (!correspond && morceau.getArtiste() != null) {
+                String nomComplet = morceau.getArtiste().getNomComplet();
+                if (nomComplet != null && nomComplet.toLowerCase().contains(mc)) {
+                    correspond = true;
+                }
+            }
+
+            // Recherche par groupe
+            if (!correspond && morceau.getGroupe() != null) {
+                String nomGroupe = morceau.getGroupe().getNom();
+                if (nomGroupe != null && nomGroupe.toLowerCase().contains(mc)) {
+                    correspond = true;
+                }
+            }
+
+            if (correspond) {
+                resultats.add(morceau);
+            }
+        }
+
+        return resultats;
+    }
+
+    public String getAlbumForMorceau(Morceau morceau) {
+        for (Album album : albums) {
+            for (Morceau m : album.getMorceaux()) {
+                if (m.getId() == morceau.getId()) {
+                    return album.getTitre();
+                }
+            }
+        }
+        return "Single";
+    }
+
+    public List<Morceau> rechercherMorceauxParGenre(String genre) {
+        List<Morceau> resultats = new ArrayList<>();
+        if (genre == null) {
+            return resultats;
+        }
+        String mc = genre.toLowerCase();
+        for (Morceau m : morceaux) {
+            if (m.getGenre().toLowerCase().contains(mc)) {
+                resultats.add(m);
+            }
+        }
+        return resultats;
+    }
+
+    public List<Morceau> rechercherMorceauxParAnnee(int annee) {
+        List<Morceau> resultats = new ArrayList<>();
+        for (Morceau m : morceaux) {
+            if (m.getAnnee() == annee) {
+                resultats.add(m);
+            }
+        }
+        return resultats;
+    }
+
+    public List<Morceau> rechercherMorceauxEntreAnnees(int debut, int fin) {
+        List<Morceau> resultats = new ArrayList<>();
+        for (Morceau m : morceaux) {
+            if (m.getAnnee() >= debut && m.getAnnee() <= fin) {
+                resultats.add(m);
+            }
+        }
+        return resultats;
+    }
+
+    public List<Morceau> rechercherMorceauxNouveautes(int anneeMin) {
+        List<Morceau> resultats = new ArrayList<>();
+        for (Morceau m : morceaux) {
+            if (m.getAnnee() >= anneeMin) {
+                resultats.add(m);
+            }
+        }
+        return resultats;
+    }
+
+    public List<Album> rechercherAlbums(String motCle) {
+        List<Album> resultats = new ArrayList<>();
+        if (motCle == null) {
+            return resultats;
+        }
+        String mc = motCle.toLowerCase();
+        for (Album a : albums) {
+            if (a.getTitre().toLowerCase().contains(mc)) {
+                resultats.add(a);
+            }
+        }
+        return resultats;
+    }
+
+    public List<Artiste> rechercherArtistes(String motCle) {
+        List<Artiste> resultats = new ArrayList<>();
+        if (motCle == null) {
+            return resultats;
+        }
+        String mc = motCle.toLowerCase();
+        for (Artiste a : artistes) {
+            if (a.getNomComplet().toLowerCase().contains(mc)) {
+                resultats.add(a);
+            }
+        }
+        return resultats;
+    }
+
+    public List<Groupe> rechercherGroupes(String motCle) {
+        List<Groupe> resultats = new ArrayList<>();
+        if (motCle == null) {
+            return resultats;
+        }
+        String mc = motCle.toLowerCase();
+        for (Groupe g : groupes) {
+            if (g.getNom().toLowerCase().contains(mc)) {
+                resultats.add(g);
+            }
+        }
+        return resultats;
+    }
+
+    public int getNbMorceaux() {
+        return morceaux.size();
+    }
+
+    public int getNbAlbums() {
+        return albums.size();
+    }
+
+    public int getNbArtistes() {
+        return artistes.size();
+    }
+
+    public int getNbGroupes() {
+        return groupes.size();
+    }
+
+    public int getNbTotalEcoutes() {
+        int total = 0;
+        for (Morceau m : morceaux) {
+            total += m.getNbEcoutes();
+        }
+        return total;
+    }
+
+    public List<Morceau> getMorceaux() {
+        return morceaux;
+    }
+
+    public List<Album> getAlbums() {
+        return albums;
+    }
+
+    public List<Artiste> getArtistes() {
+        return artistes;
+    }
+
+    public List<Groupe> getGroupes() {
+        return groupes;
+    }
+}
